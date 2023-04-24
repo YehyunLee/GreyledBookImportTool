@@ -10,9 +10,12 @@ from pdfstructure.hierarchy.traversal import traverse_level_order
 import tkinter as tk
 from tkinter import filedialog
 
+import fitz
+
 import PyPDF2
 import json
 
+import part2_classification
 
 def user_input() -> None:
     """
@@ -45,28 +48,67 @@ This page is Copyright (c) 2023 Greyled.""")
     st.title('Import Book')
     st.write('Choose a PDF file')
 
-
     # uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
     # print(uploaded_file.name)
 
-    clicked = st.button('Import Book')
-    if clicked:
-        root = tk.Tk()
-        root.withdraw()
-        root.wm_attributes('-topmost', 1)
-        file_path = st.text_input('Selected file:', filedialog.askopenfilename(master=root))
+    # clicked = st.button('Import Book')
+    # if clicked:
+    root = tk.Tk()
+    root.withdraw()
+    root.wm_attributes('-topmost', 1)
+    file_path = st.text_input('Selected file:', filedialog.askopenfilename(master=root))
 
-        parser = HierarchyParser()
-        source = FileSource(file_path)
-        document = parser.parse_pdf(source)
+    # parser = HierarchyParser()
+    # source = FileSource(file_path)
+    # document = parser.parse_pdf(source)
+    #
+    # stringExporter = PrettyStringPrinter()
+    # prettyString = stringExporter.print(document)
+    #
+    # st.text(prettyString)
+    #
+    # st.text(part2_classification.classification(prettyString))
 
-        stringExporter = PrettyStringPrinter()
-        prettyString = stringExporter.print(document)
 
-        st.text(prettyString)
+    # Create a document object
+    doc = fitz.open('C:/Users/glad7/Downloads/Yehyun Lee Resume.pdf')  # or fitz.Document(filename)
 
-        # sections = [e for e in traverse_level_order(document, max_depth=2)]
-        # st.text(sections)
+    # Extract the number of pages (int)
+    print('page', doc.page_count)
+
+    # the metadata (dict) e.g., the author,...
+    print('metadata', doc.metadata)
+
+    ###############################################################
+    # Get the page by their index
+    page = doc.load_page(0)
+    # page = doc[0]
+
+    # read a Page
+    text = page.get_text()
+    print(text)
+
+    # Render and save the page as an image
+    pix = page.get_pixmap()
+    pix.save(f"page-{page.number}.png")
+
+    # get all links on a page
+    links = page.get_links()
+    print(links)
+
+    # Render and save all the pages as images
+    for i in range(doc.page_count):
+        page = doc.load_page(i)
+        pix = page.get_pixmap()
+        pix.save("page-%i.png" % page.number)
+
+    # get the links on all pages
+    for i in range(doc.page_count):
+        page = doc.load_page(i)
+        link = page.get_links()
+        print(link)
+
+    edit = st.button('Edit')
 
 
 if __name__ == '__main__':
