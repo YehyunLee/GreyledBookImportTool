@@ -9,7 +9,6 @@ from pdfstructure.hierarchy.traversal import traverse_level_order
 
 import tkinter as tk
 from tkinter import filedialog
-
 import fitz
 
 import PyPDF2
@@ -17,12 +16,14 @@ import json
 
 import part2_classification
 
+
 def user_input() -> None:
     """
     This function runs the Streamlit library and opens up the browser. It let user choose a pdf and
     identify and categorize by title, subtitle, paragraphs and more.
     """
     # Set Title of Web Page
+    global page
     st.set_page_config(page_title="Greyled - Book Import Tool")
 
     # Title
@@ -51,64 +52,66 @@ This page is Copyright (c) 2023 Greyled.""")
     # uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
     # print(uploaded_file.name)
 
-    # clicked = st.button('Import Book')
-    # if clicked:
-    root = tk.Tk()
-    root.withdraw()
-    root.wm_attributes('-topmost', 1)
-    file_path = st.text_input('Selected file:', filedialog.askopenfilename(master=root))
+    if 'result' not in st.session_state:
+        st.session_state.result = None
 
-    # parser = HierarchyParser()
-    # source = FileSource(file_path)
-    # document = parser.parse_pdf(source)
-    #
-    # stringExporter = PrettyStringPrinter()
-    # prettyString = stringExporter.print(document)
-    #
-    # st.text(prettyString)
-    #
-    # st.text(part2_classification.classification(prettyString))
+    clicked = st.button('Import Book')
+    if clicked:
+        try:
+            root = tk.Tk()
+            root.withdraw()
+            root.wm_attributes('-topmost', 1)
+            file_path = st.text_input('Selected file:', filedialog.askopenfilename(master=root))
+        finally:
+            st.session_state.result = file_path
 
+    if st.session_state.result:
+        doc = fitz.open(st.session_state.result)  # or fitz.Document(filename)
+        st.subheader('Classified')
+        parser = HierarchyParser()
+        source = FileSource(st.session_state.result)
+        document = parser.parse_pdf(source)
+        stringExporter = PrettyStringPrinter()
+        prettyString = stringExporter.print(document)
+        data = part2_classification.classification(prettyString)
 
-    # Create a document object
-    doc = fitz.open('C:/Users/glad7/Downloads/Yehyun Lee Resume.pdf')  # or fitz.Document(filename)
+        object_types = st.multiselect('Select Type of Objects', ['Big Elements', 'Paragraphs', 'Bullet Points'])
+        if 'Big Elements' in object_types:
+            st.text('Big Elements')
+            st.write(data['big_elements'])
+        if 'Paragraphs' in object_types:
+            st.text('Paragraphs')
+            st.write(data['paragraphs'])
+        if 'Bullet Points' in object_types:
+            st.text('Bullet Points')
+            st.write(data['bullet_points'])
 
-    # Extract the number of pages (int)
-    print('page', doc.page_count)
+        st.subheader('Original Check')
+        st.write('Total pages: ', doc.page_count)
+        # the metadata (dict) e.g., the author,...
+        st.write('Metadata: ', doc.metadata)
+        selected_page = st.selectbox('Select Page Number', list(range(1, doc.page_count + 1))) - 1
+        # Get the page by their index
+        page = doc.load_page(selected_page)  # page = doc[page]
 
-    # the metadata (dict) e.g., the author,...
-    print('metadata', doc.metadata)
+        st.subheader("Texts")
+        # read a page
+        text = page.get_text()
+        st.text(text)
 
-    ###############################################################
-    # Get the page by their index
-    page = doc.load_page(0)
-    # page = doc[0]
-
-    # read a Page
-    text = page.get_text()
-    print(text)
-
-    # Render and save the page as an image
-    pix = page.get_pixmap()
-    pix.save(f"page-{page.number}.png")
-
-    # get all links on a page
-    links = page.get_links()
-    print(links)
-
-    # Render and save all the pages as images
-    for i in range(doc.page_count):
-        page = doc.load_page(i)
-        pix = page.get_pixmap()
-        pix.save("page-%i.png" % page.number)
-
-    # get the links on all pages
-    for i in range(doc.page_count):
-        page = doc.load_page(i)
+        st.subheader("Links")
+        # get all links on a page
         link = page.get_links()
-        print(link)
+        st.text(link)
 
-    edit = st.button('Edit')
+        st.subheader("Links on All Pages")
+        # get the links on all pages
+        save_links = []
+        for i in range(doc.page_count):
+            page = doc.load_page(i)
+            links = page.get_links()
+            save_links.extend(links)
+        st.text(save_links)
 
 
 if __name__ == '__main__':
