@@ -7,9 +7,9 @@ from pdfstructure.printer import PrettyStringPrinter
 from pdfstructure.model.document import StructuredPdfDocument
 from pdfstructure.hierarchy.traversal import traverse_level_order
 
-# import tkinter as tk
-# from tkinter import filedialog
-# import fitz
+import tkinter as tk
+from tkinter import filedialog
+import fitz
 
 import PyPDF2
 import json
@@ -55,18 +55,18 @@ This page is Copyright (c) 2023 Greyled.""")
     if 'result' not in st.session_state:
         st.session_state.result = None
 
-    clicked = st.button('Import Book')
     file_path = ''
+    clicked = st.button('Import Book')
     if clicked:
         try:
-            import easygui
-            file_path = easygui.fileopenbox(title='Add File', default="*.pdf")
+            # import easygui
+            # file_path = easygui.fileopenbox(title='Add File', default="*.pdf")
             # st.write(file_path)
 
-            # root = tk.Tk()
-            # root.withdraw()
-            # root.wm_attributes('-topmost', 1)
-            # file_path = st.text_input('Selected file:', filedialog.askopenfilename(master=root))
+            root = tk.Tk()
+            root.withdraw()
+            root.wm_attributes('-topmost', 1)
+            file_path = st.text_input('Selected file:', filedialog.askopenfilename(master=root))
         finally:
             st.session_state.result = file_path
 
