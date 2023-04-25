@@ -58,10 +58,14 @@ This page is Copyright (c) 2023 Greyled.""")
     clicked = st.button('Import Book')
     if clicked:
         try:
-            root = tk.Tk()
-            root.withdraw()
-            root.wm_attributes('-topmost', 1)
-            file_path = st.text_input('Selected file:', filedialog.askopenfilename(master=root))
+            import easygui
+            file_path = easygui.fileopenbox(title='Add File', default="*.pdf")
+            st.write(file_path)
+
+            # root = tk.Tk()
+            # root.withdraw()
+            # root.wm_attributes('-topmost', 1)
+            # file_path = st.text_input('Selected file:', filedialog.askopenfilename(master=root))
         finally:
             st.session_state.result = file_path
 
