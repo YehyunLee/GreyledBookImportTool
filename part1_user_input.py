@@ -7,8 +7,8 @@ from pdfstructure.printer import PrettyStringPrinter
 from pdfstructure.model.document import StructuredPdfDocument
 from pdfstructure.hierarchy.traversal import traverse_level_order
 
-import tkinter as tk
-from tkinter import filedialog
+# import tkinter as tk
+# from tkinter import filedialog
 import fitz
 
 import PyPDF2
