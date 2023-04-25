@@ -2,7 +2,6 @@
 git+https://github.com/ChrizH/pdfstructure.git  # instead of .git @branch_name work as well
 sortedcontainers==2.2.2  # Required for pdfstructure
 pdfminer.six==20200517  # Required for pdfstructure
-pdfplumber~=0.9.0  # Testing purpose
 
 # Basics
 streamlit==1.20.0
