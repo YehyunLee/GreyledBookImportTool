@@ -16,14 +16,14 @@ import json
 
 import part2_classification
 
-file_path = ''
+
 def user_input() -> None:
     """
     This function runs the Streamlit library and opens up the browser. It let user choose a pdf and
     identify and categorize by title, subtitle, paragraphs and more.
     """
     # Set Title of Web Page
-    global page, file_path
+    global page
     st.set_page_config(page_title="Greyled - Book Import Tool")
 
     # Title
@@ -56,6 +56,7 @@ This page is Copyright (c) 2023 Greyled.""")
         st.session_state.result = None
 
     clicked = st.button('Import Book')
+    file_path = ''
     if clicked:
         try:
             import easygui
