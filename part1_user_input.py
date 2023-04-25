@@ -9,7 +9,7 @@ from pdfstructure.hierarchy.traversal import traverse_level_order
 
 # import tkinter as tk
 # from tkinter import filedialog
-import fitz
+# import fitz
 
 import PyPDF2
 import json
@@ -70,7 +70,6 @@ This page is Copyright (c) 2023 Greyled.""")
             st.session_state.result = file_path
 
     if st.session_state.result:
-        doc = fitz.open(st.session_state.result)  # or fitz.Document(filename)
         st.subheader('Classified')
         parser = HierarchyParser()
         source = FileSource(st.session_state.result)
@@ -90,6 +89,7 @@ This page is Copyright (c) 2023 Greyled.""")
             st.text('Bullet Points')
             st.write(data['bullet_points'])
 
+        doc = fitz.open(st.session_state.result)  # or fitz.Document(filename)
         st.subheader('Original Check')
         st.write('Total pages: ', doc.page_count)
         # the metadata (dict) e.g., the author,...
