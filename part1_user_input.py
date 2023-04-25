@@ -23,7 +23,7 @@ def user_input() -> None:
     identify and categorize by title, subtitle, paragraphs and more.
     """
     # Set Title of Web Page
-    global page
+    global page, file_path
     st.set_page_config(page_title="Greyled - Book Import Tool")
 
     # Title
