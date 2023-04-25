@@ -11,3 +11,4 @@ pypdf2~=2.0.0
 future~=0.18.3
 fitz~=0.0.1.dev2
 tk==0.1.0
+Tcl==0.2
