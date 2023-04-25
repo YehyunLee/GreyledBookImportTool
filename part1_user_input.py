@@ -6,8 +6,6 @@ from pdfstructure.source import FileSource
 from pdfstructure.printer import PrettyStringPrinter
 from pdfstructure.model.document import StructuredPdfDocument
 from pdfstructure.hierarchy.traversal import traverse_level_order
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QFileDialog
 
 import tkinter as tk
 from tkinter import filedialog
@@ -60,11 +58,10 @@ This page is Copyright (c) 2023 Greyled.""")
     clicked = st.button('Import Book')
     if clicked:
         try:
-            # root = tk.Tk()
-            # root.withdraw()
-            # root.wm_attributes('-topmost', 1)
-            file_path, _ = QFileDialog.getOpenFileName()
-            file_path = st.text_input('Selected file:', file_path)
+            root = tk.Tk()
+            root.withdraw()
+            root.wm_attributes('-topmost', 1)
+            file_path = st.text_input('Selected file:', filedialog.askopenfilename(master=root))
         finally:
             st.session_state.result = file_path
 
