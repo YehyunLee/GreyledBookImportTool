@@ -16,7 +16,7 @@ import json
 
 import part2_classification
 
-
+file_path = ''
 def user_input() -> None:
     """
     This function runs the Streamlit library and opens up the browser. It let user choose a pdf and
